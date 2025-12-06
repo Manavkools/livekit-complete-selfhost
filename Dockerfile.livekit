@@ -1,0 +1,18 @@
+FROM livekit/livekit-server:latest
+
+# Copy configuration
+COPY livekit.yaml /etc/livekit.yaml
+
+# Copy startup script
+COPY start-livekit.sh /start-livekit.sh
+RUN chmod +x /start-livekit.sh
+
+# Create recordings directory
+RUN mkdir -p /recordings
+
+# Expose ports
+EXPOSE 7880 7881 7882
+
+# Use startup script
+CMD ["/start-livekit.sh"]
+

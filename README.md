@@ -2,11 +2,18 @@
 
 Complete self-hosted LiveKit server with SIP server support. Get up and running in under 10 minutes!
 
-## ☁️ Deploy to DigitalOcean (5 Minutes)
+## ☁️ Deploy to DigitalOcean
 
+### Option 1: App Platform (Limited SIP Support)
+⚠️ **Note**: App Platform has UDP port limitations. For full SIP functionality, use a Droplet.
+
+- See [APP_PLATFORM_DEPLOY.md](./APP_PLATFORM_DEPLOY.md) for App Platform deployment
+- App Platform will auto-detect `.do/app.yaml` configuration
+
+### Option 2: Droplet (Recommended - Full Functionality)
 **Quick cloud deployment**: See [QUICK_START_DO.md](./QUICK_START_DO.md) for the fastest way to deploy to DigitalOcean.
 
-For detailed DigitalOcean deployment guide, see [DEPLOY_DIGITALOCEAN.md](./DEPLOY_DIGITALOCEAN.md).
+For detailed DigitalOcean Droplet deployment guide, see [DEPLOY_DIGITALOCEAN.md](./DEPLOY_DIGITALOCEAN.md).
 
 ## 🚀 Quick Start (10 Minutes)
 

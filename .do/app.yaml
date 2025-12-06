@@ -1,0 +1,72 @@
+name: livekit-complete-selfhost
+region: nyc
+
+# Note: DigitalOcean App Platform has limitations with UDP ports
+# For full SIP/RTP support, consider using a Droplet instead
+# This configuration provides LiveKit server with limited SIP support
+
+databases:
+  - name: redis
+    engine: REDIS
+    version: "7"
+    production: false
+    cluster_name: livekit-redis
+
+services:
+  # LiveKit Server
+  - name: livekit-server
+    github:
+      repo: Manavkools/livekit-complete-selfhost
+      branch: main
+      deploy_on_push: true
+    dockerfile_path: Dockerfile.livekit
+    http_port: 7880
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    routes:
+      - path: /
+    envs:
+      - key: LIVEKIT_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: LIVEKIT_API_SECRET
+        scope: RUN_TIME
+        type: SECRET
+      - key: REDIS_URL
+        scope: RUN_TIME
+        value: ${redis.DATABASE_URL}
+      - key: LIVEKIT_KEYS
+        scope: RUN_TIME
+        value: ${LIVEKIT_API_KEY}:${LIVEKIT_API_SECRET}
+    health_check:
+      http_path: /
+      initial_delay_seconds: 10
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+
+  # SIP Server (Note: Limited UDP support in App Platform)
+  - name: sip-server
+    github:
+      repo: Manavkools/livekit-complete-selfhost
+      branch: main
+      deploy_on_push: true
+    dockerfile_path: Dockerfile.sip
+    http_port: 5060
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    envs:
+      - key: LIVEKIT_URL
+        scope: RUN_TIME
+        value: ws://${livekit-server.PUBLIC_URL}
+      - key: LIVEKIT_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+      - key: LIVEKIT_API_SECRET
+        scope: RUN_TIME
+        type: SECRET
+      - key: REDIS_URL
+        scope: RUN_TIME
+        value: ${redis.DATABASE_URL}
+
