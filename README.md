@@ -11,9 +11,17 @@ Complete self-hosted LiveKit server with SIP server support. Get up and running 
 - App Platform will auto-detect `.do/app.yaml` configuration
 
 ### Option 2: Droplet (Recommended - Full Functionality)
-**Quick cloud deployment**: See [QUICK_START_DO.md](./QUICK_START_DO.md) for the fastest way to deploy to DigitalOcean.
 
-For detailed DigitalOcean Droplet deployment guide, see [DEPLOY_DIGITALOCEAN.md](./DEPLOY_DIGITALOCEAN.md).
+**Choose your deployment method:**
+
+- **With Docker** (Recommended for isolation & easy updates):
+  - Quick start: [QUICK_START_DO.md](./QUICK_START_DO.md)
+  - Full guide: [DEPLOY_DIGITALOCEAN.md](./DEPLOY_DIGITALOCEAN.md)
+  - Script: `deploy-digitalocean.sh`
+
+- **Without Docker** (Lighter weight & direct control):
+  - Guide: [DEPLOY_NO_DOCKER.md](./DEPLOY_NO_DOCKER.md)
+  - Script: `deploy-no-docker.sh`
 
 ## 🚀 Quick Start (10 Minutes)
 
