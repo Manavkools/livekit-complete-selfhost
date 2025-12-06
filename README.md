@@ -2,6 +2,12 @@
 
 Complete self-hosted LiveKit server with SIP server support. Get up and running in under 10 minutes!
 
+## ☁️ Deploy to DigitalOcean (5 Minutes)
+
+**Quick cloud deployment**: See [QUICK_START_DO.md](./QUICK_START_DO.md) for the fastest way to deploy to DigitalOcean.
+
+For detailed DigitalOcean deployment guide, see [DEPLOY_DIGITALOCEAN.md](./DEPLOY_DIGITALOCEAN.md).
+
 ## 🚀 Quick Start (10 Minutes)
 
 ### Prerequisites
