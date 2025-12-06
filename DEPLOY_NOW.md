@@ -22,8 +22,14 @@ Copy and paste this entire block into your terminal:
 # Connect to your droplet (replace YOUR_DROPLET_IP)
 ssh root@YOUR_DROPLET_IP
 
-# One-command deployment
-git clone https://github.com/Manavkools/livekit-complete-selfhost.git && \
+# Clone repository (use your GitHub token if repo is private)
+# Option 1: Public repo (no auth needed)
+git clone https://github.com/Manavkools/livekit-complete-selfhost.git
+
+# Option 2: If you need to use a token (replace YOUR_TOKEN)
+# git clone https://YOUR_TOKEN@github.com/Manavkools/livekit-complete-selfhost.git
+
+# Deploy
 cd livekit-complete-selfhost && \
 chmod +x deploy-digitalocean.sh && \
 ./deploy-digitalocean.sh
