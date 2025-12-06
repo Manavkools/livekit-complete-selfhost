@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: livekit-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    networks:
+      - livekit-network
+
+  livekit-server:
+    image: livekit/livekit-server:latest
+    container_name: livekit-server
+    ports:
+      - "7880:7880"      # WebSocket port
+      - "7881:7881"      # HTTP port
+      - "7882:7882"      # TURN TCP port
+      - "50000-60000:50000-60000/udp"  # TURN UDP port range
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml:ro
+      - ./recordings:/recordings
+    env_file:
+      - .env
+    environment:
+      - LIVEKIT_KEYS=${LIVEKIT_API_KEY}:${LIVEKIT_API_SECRET}
+    command: --config /etc/livekit.yaml
+    restart: unless-stopped
+    depends_on:
+      - redis
+    networks:
+      - livekit-network
+
+  sip-server:
+    image: livekit/sip:latest
+    container_name: livekit-sip
+    ports:
+      - "5060:5060/udp"   # SIP signaling port
+      - "5060:5060/tcp"   # SIP signaling port (TCP)
+      - "10000-20000:10000-20000/udp"  # RTP media port range
+    volumes:
+      - ./sip.yaml:/etc/sip.yaml:ro
+    env_file:
+      - .env
+    environment:
+      - LIVEKIT_URL=ws://livekit-server:7880
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET}
+      - REDIS_URL=redis://redis:6379
+    command: --config /etc/sip.yaml
+    restart: unless-stopped
+    depends_on:
+      - livekit-server
+      - redis
+    networks:
+      - livekit-network
+
+volumes:
+  redis-data:
+
+networks:
+  livekit-network:
+    driver: bridge
+

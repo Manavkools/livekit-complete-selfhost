@@ -1,0 +1,9 @@
+.env
+.env.local
+recordings/
+*.log
+.git/
+.gitignore
+README.md
+.DS_Store
+

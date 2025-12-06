@@ -1,0 +1,40 @@
+port: 7880
+bind_addresses:
+  - ""
+
+rtc:
+  tcp_port: 7881
+  port_range_start: 50000
+  port_range_end: 60000
+  use_external_ip: false
+  # Set to true and configure stun_servers if you want to use external IP
+  # use_external_ip: true
+  # stun_servers:
+  #   - stun:stun.l.google.com:19302
+
+redis:
+  address: redis:6379
+
+# Keys are provided via environment variables (LIVEKIT_KEYS)
+# Format: LIVEKIT_KEYS=api_key:api_secret
+# For multiple keys, separate with commas: key1:secret1,key2:secret2
+
+# Logging
+log_level: info
+
+# Room settings
+room:
+  empty_timeout: 5m
+  max_duration: 0
+
+# Recording (optional)
+# recording:
+#   enabled: true
+#   output:
+#     rtmp:
+#       address: rtmp://your-rtmp-server
+
+# Egress (optional)
+# egress:
+#   enabled: true
+

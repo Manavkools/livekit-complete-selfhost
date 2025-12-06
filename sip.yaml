@@ -1,0 +1,45 @@
+# LiveKit SIP Server Configuration
+
+# LiveKit server connection
+livekit_url: ws://livekit-server:7880
+livekit_api_key: ${LIVEKIT_API_KEY}
+livekit_api_secret: ${LIVEKIT_API_SECRET}
+
+# Redis connection
+redis:
+  address: redis:6379
+
+# SIP server settings
+sip:
+  # SIP bind address (0.0.0.0 to accept connections from all interfaces)
+  bind_address: "0.0.0.0"
+  # SIP port (default 5060)
+  port: 5060
+  # Domain for SIP (use your public IP or domain)
+  domain: "sip.livekit.local"
+  # Outbound proxy (optional)
+  # outbound_proxy: "sip:proxy.example.com:5060"
+
+# RTP settings
+rtp:
+  # RTP port range for media
+  port_range_start: 10000
+  port_range_end: 20000
+  # Use external IP for RTP (set to true if behind NAT)
+  use_external_ip: false
+  # External IP address (if use_external_ip is true)
+  # external_ip: "your.public.ip.address"
+
+# Logging
+log_level: info
+
+# Number formatting
+number_cleanup:
+  enabled: true
+  # Rules for number cleanup
+  rules:
+    - pattern: "^\\+1"
+      replacement: ""
+    - pattern: "^1"
+      replacement: ""
+
