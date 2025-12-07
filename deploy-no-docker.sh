@@ -80,8 +80,7 @@ keys:
 log_level: info
 
 room:
-  empty_timeout: 5m
-  max_duration: 0
+  empty_timeout: 300  # 5 minutes in seconds
 EOF
 echo "✅ LiveKit configuration created at /etc/livekit/livekit.yaml"
 
