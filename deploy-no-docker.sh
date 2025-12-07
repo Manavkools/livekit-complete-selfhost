@@ -113,22 +113,66 @@ echo "✅ LiveKit service started"
 # Step 7: Install LiveKit SIP Server
 echo ""
 echo "📦 Installing LiveKit SIP Server..."
-# Download latest SIP server release
-SIP_VERSION=$(curl -s https://api.github.com/repos/livekit/sip/releases/latest | grep tag_name | cut -d '"' -f 4)
+# Determine architecture
 ARCH=$(uname -m)
 if [ "$ARCH" = "x86_64" ]; then
     ARCH="amd64"
 elif [ "$ARCH" = "aarch64" ]; then
     ARCH="arm64"
+else
+    echo "❌ Unsupported architecture: $ARCH"
+    exit 1
 fi
 
-SIP_URL="https://github.com/livekit/sip/releases/download/${SIP_VERSION}/livekit-sip_${SIP_VERSION#v}_linux_${ARCH}.tar.gz"
-curl -L "$SIP_URL" -o /tmp/livekit-sip.tar.gz
-tar -xzf /tmp/livekit-sip.tar.gz -C /tmp
-mv /tmp/livekit-sip /usr/local/bin/
-chmod +x /usr/local/bin/livekit-sip
-rm /tmp/livekit-sip.tar.gz
-echo "✅ LiveKit SIP Server installed"
+# Try to get latest version from GitHub API, with fallback
+SIP_VERSION=$(curl -s https://api.github.com/repos/livekit/sip/releases/latest 2>/dev/null | grep -oP '"tag_name": "\K[^"]+' | head -1)
+
+# Fallback to a known working version if API fails
+if [ -z "$SIP_VERSION" ]; then
+    echo "⚠️  Could not fetch latest version, using v1.0.0"
+    SIP_VERSION="v1.0.0"
+fi
+
+# Remove 'v' prefix if present for filename
+SIP_VERSION_CLEAN=${SIP_VERSION#v}
+
+echo "   Downloading SIP server version: $SIP_VERSION"
+
+# Construct download URL
+SIP_URL="https://github.com/livekit/sip/releases/download/${SIP_VERSION}/livekit-sip_${SIP_VERSION_CLEAN}_linux_${ARCH}.tar.gz"
+
+# Download with error checking
+if ! curl -L -f "$SIP_URL" -o /tmp/livekit-sip.tar.gz; then
+    echo "❌ Failed to download SIP server from: $SIP_URL"
+    echo "   Trying alternative method..."
+    
+    # Alternative: Try downloading the binary directly
+    SIP_BINARY_URL="https://github.com/livekit/sip/releases/download/${SIP_VERSION}/livekit-sip_${SIP_VERSION_CLEAN}_linux_${ARCH}"
+    if curl -L -f "$SIP_BINARY_URL" -o /usr/local/bin/livekit-sip; then
+        chmod +x /usr/local/bin/livekit-sip
+        echo "✅ LiveKit SIP Server installed (binary)"
+    else
+        echo "❌ Failed to download SIP server. Please install manually."
+        echo "   Visit: https://github.com/livekit/sip/releases"
+        exit 1
+    fi
+else
+    # Extract if download succeeded
+    if tar -xzf /tmp/livekit-sip.tar.gz -C /tmp 2>/dev/null; then
+        if [ -f /tmp/livekit-sip ]; then
+            mv /tmp/livekit-sip /usr/local/bin/
+            chmod +x /usr/local/bin/livekit-sip
+            rm -f /tmp/livekit-sip.tar.gz
+            echo "✅ LiveKit SIP Server installed"
+        else
+            echo "❌ SIP binary not found in archive"
+            exit 1
+        fi
+    else
+        echo "❌ Failed to extract SIP server archive"
+        exit 1
+    fi
+fi
 
 # Step 8: Create SIP configuration
 echo ""
